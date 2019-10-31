@@ -19,14 +19,14 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody rb;
     float rotationY;
-
-   
+    bool isColliding;
 
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        isColliding = false;
         
     }
 
@@ -61,17 +61,36 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.A))
         {
             Debug.Log("Down");
+            //rb.velocity = new Vector3(speed * Mathf.Sin(rotationY * PI / 180), 0, speed * Mathf.Cos(rotationY * PI / 180));
+            rb.AddForce(10 * speed * Mathf.Sin(rotationY * PI / 180), 0, 10 * speed * Mathf.Cos(rotationY * PI / 180));
         } else
         {
-            rb.velocity = new Vector3(speed * Mathf.Sin(rotationY * PI / 180), 0, speed * Mathf.Cos(rotationY * PI / 180));
-            print(rb.velocity);
+            if (isColliding)
+            {
+
+            }
+            else
+            {
+                //rb.velocity = new Vector3(speed * Mathf.Sin(rotationY * PI / 180), 0, speed * Mathf.Cos(rotationY * PI / 180));
+                //rb.AddForce(speed * Mathf.Sin(rotationY * PI / 180), 0, speed * Mathf.Cos(rotationY * PI / 180))
+            }
+            
         }
-
-
-        
-
+        print(isColliding);
     }
-    
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        //Code Here
+        //isColliding = true;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        //code
+        isColliding = false;
+    }
+
 
     //void moveAndRotate() 
     //{
