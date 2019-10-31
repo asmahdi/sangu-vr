@@ -84,7 +84,7 @@ Material:
     - _BumpScale: 1
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DepthMaxDistance: 0.8
+    - _DepthMaxDistance: 2
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _FoamMaxDistance: 0.5
@@ -119,8 +119,8 @@ Material:
     - Color_F95A4659: {r: 0.3077608, g: 0.6756047, b: 0.7169812, a: 1}
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DepthGradientDeep: {r: 0.3508811, g: 0.7609726, b: 0.7830189, a: 0.8235294}
-    - _DepthGradientShallow: {r: 0.38033998, g: 0.7264151, b: 0.7169336, a: 0.725}
+    - _DepthGradientDeep: {r: 0.18689926, g: 0.5283019, b: 0.4676081, a: 1}
+    - _DepthGradientShallow: {r: 0.4805981, g: 0.754717, b: 0.6667282, a: 0.29411766}
     - _Direction: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
