@@ -32,19 +32,22 @@ public class FloatingObject : MonoBehaviour {
 
 	void OnTriggerStay(Collider col)
 	{
-		if (col.tag != waterBodyTag)
+        if (col.tag != waterBodyTag)
 		{
 			return;
 		}
 
 		try {
-			waterLevel = col.gameObject.transform.position.y;
+
+            waterLevel = col.gameObject.transform.position.y;
 
 			upliftForce.y = 9.8f*(waterLevel+floatingOffset-transform.position.y);
+
+            
 			
 			if (gameObject.transform.position.y < waterLevel)
 			{
-				gameObject.GetComponent<Rigidbody>().AddForce(upliftForce, ForceMode.Acceleration);
+                gameObject.GetComponent<Rigidbody>().AddForce(upliftForce, ForceMode.Acceleration);
 
 			}
 			if (gameObject.transform.position.y < waterLevel+floatingOffset)
