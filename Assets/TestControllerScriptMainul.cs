@@ -10,11 +10,12 @@ public class TestControllerScriptMainul : MonoBehaviour
 
 	static int colorIndex, length;
 
-
+    public GameObject handle;
     public TMP_Text text;
 
     float timer;
 
+    Quaternion qrot;
 
     // Start is called before the first frame update
     void Start()
@@ -44,6 +45,7 @@ public class TestControllerScriptMainul : MonoBehaviour
 
     void ovrIntrigation()
     {
+        OVRInput.Update();
 
         GetComponent<Renderer>().material.color = Color.blue;
 
@@ -57,6 +59,11 @@ public class TestControllerScriptMainul : MonoBehaviour
                 colorIndex = 0;
             }
         }
+
+        qrot = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTrackedRemote);
+
+        text.text = qrot.ToEuler().ToString();
+        handle.transform.rotation = qrot;
 
         //if (OVRInput.Get(OVRInput.RawButton.RTouchpad))
         //{
