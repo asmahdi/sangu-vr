@@ -79,14 +79,14 @@ Material:
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _Speed: 10
+    - _Speed: 5.52
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorBottomDark: {r: 0, g: 0.41509432, b: 0.27672958, a: 1}
-    - _ColorBottomLight: {r: 1.3396226, g: 1.3396226, b: 1.3396226, a: 1}
-    - _ColorTopDark: {r: 0.13176396, g: 0.4433962, b: 0.22425899, a: 1}
+    - _ColorBottomDark: {r: 0.2460395, g: 0.9150943, b: 0.69417995, a: 1}
+    - _ColorBottomLight: {r: 0.9192413, g: 1.1135952, b: 1.0322696, a: 1}
+    - _ColorTopDark: {r: 0.027990391, g: 0.25214788, b: 0.3490566, a: 1}
     - _ColorTopLight: {r: 0.21404415, g: 0.6981132, b: 0.59323156, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
