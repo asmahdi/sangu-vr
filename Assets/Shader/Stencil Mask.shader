@@ -1,12 +1,24 @@
 ﻿Shader "Stencil Mask" {
+        Properties 
+        {
+            _Ref("Reference Value", Int) = 1
+        }
+        
+
     SubShader {
-        Tags { 
-            "Queue"="Transparent"}
+        Tags 
+        { 
+            "RenderType"="Transparent" "Queue" = "Geometry+1"
+        }
+
+        colormask 0
+        ZWrite off
+
         Pass {
             Stencil {
-                Ref 1
-                Comp always
-                Pass replace
+                Ref [_Ref]
+               Pass replace
+                
             }
         
             CGPROGRAM
