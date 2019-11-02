@@ -108,9 +108,9 @@ Material:
     - _SrcBlend: 1
     - _Surface: 0
     - _SurfaceDistortionAmount: 0.8
-    - _SurfaceNoiseCutoff: 0.8
+    - _SurfaceNoiseCutoff: 0.81
     - _UVSec: 0
-    - _WaveSteepness: 0.15
+    - _WaveSteepness: 0.07
     - _Wavelength: 2
     - _Wavespeed: 1.97
     - _ZWrite: 1
