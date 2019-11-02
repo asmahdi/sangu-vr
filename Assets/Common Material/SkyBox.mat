@@ -21,8 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: SkyBox
-  m_Shader: {fileID: -6465566751694194690, guid: 71a1174fad31048b1bed25b7211ea115,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: 4b442bc0df619484299d8302acf04f05, type: 3}
   m_ShaderKeywords: _MAPPING_LATITUDE_LONGITUDE_LAYOUT _SUNDISK_HIGH_QUALITY
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -33,6 +32,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_C980B12:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BackTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -92,10 +95,11 @@ Material:
     m_Floats:
     - Vector1_13D34D9B: 0
     - Vector1_1B3489A0: 0
-    - Vector1_226EE29B: 0
+    - Vector1_226EE29B: 0.03
+    - Vector1_245E01AA: -0.08
     - Vector1_32C75CA4: 1
     - Vector1_91AD7774: 0
-    - Vector1_D4DFF10B: 0.31
+    - Vector1_D4DFF10B: 0
     - Vector1_DDC72600: 10
     - _AlphaClip: 0
     - _AtmosphereThickness: 0.65
@@ -109,6 +113,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HorizonOffset: -0.12
     - _ImageType: 0
     - _Layout: 0
     - _Mapping: 1
@@ -123,23 +128,26 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SunDisk: 2
-    - _SunSize: 0.1
+    - _SunSize: 0.13
     - _SunSizeConvergence: 4.42
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_61BA23B3: {r: 0.18222678, g: 0.5782633, b: 0.6132076, a: 1}
+    - Color_61BA23B3: {r: 0.5109024, g: 0.8396226, b: 0.7444667, a: 1}
     - Color_9A6BB30B: {r: 0, g: 0, b: 0, a: 0}
-    - Color_A08709BC: {r: 1, g: 1, b: 1, a: 0}
-    - Color_BF61E563: {r: 1, g: 1, b: 1, a: 0}
+    - Color_A08709BC: {r: 1, g: 1, b: 1, a: 1}
+    - Color_BF0A5BB5: {r: 1, g: 1, b: 1, a: 1}
+    - Color_BF61E563: {r: 1, g: 1, b: 1, a: 1}
     - Color_D446F176: {r: 0.7411765, g: 0.7490196, b: 0.7490196, a: 0}
-    - Color_F62CF8C1: {r: 0.8196079, g: 0.82745105, b: 0.8235295, a: 1}
+    - Color_F62CF8C1: {r: 0.59607846, g: 0.7411765, b: 0.7058824, a: 1}
     - Vector2_5C29F3EA: {r: 0.1, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GroundColor: {r: 1, g: 1, b: 1, a: 1}
+    - _HorizonColor: {r: 0.33187968, g: 0.6044689, b: 0.6226415, a: 1}
+    - _SkyColor: {r: 1, g: 1, b: 1, a: 1}
     - _SkyTint: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _Tint: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
