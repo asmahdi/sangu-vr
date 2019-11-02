@@ -105,11 +105,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SurfaceDistortion:
         m_Texture: {fileID: 2800000, guid: 59de837f8c87d4225aaf124c72f60828, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 20, y: 25}
         m_Offset: {x: 0, y: 0}
     - _SurfaceNoise:
         m_Texture: {fileID: 2800000, guid: 7451c10026b334bfc831ff8b0dba276f, type: 3}
-        m_Scale: {x: 1, y: 10}
+        m_Scale: {x: 20, y: 25}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_1576D548: 0.64
@@ -158,8 +158,8 @@ Material:
     - _SpecularHighlights: 0
     - _SrcBlend: 1
     - _Surface: 0
-    - _SurfaceDistortionAmount: 1
-    - _SurfaceNoiseCutoff: 0.583
+    - _SurfaceDistortionAmount: 0.76
+    - _SurfaceNoiseCutoff: 0.6
     - _Tessellation: 1
     - _TransparencyIntersectionThresholdMax: 0
     - _TransparencyIntersectionThresholdMin: 0
