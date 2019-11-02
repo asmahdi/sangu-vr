@@ -83,6 +83,7 @@
                  
                 fixed4 col = lerp(lerp(_ColorBottomDark, _ColorTopDark, i.uv.y), lerp(_ColorBottomLight, _ColorTopLight, i.uv.y), noise);
                 col = lerp(fixed4(1,1,1,1), col, step(_BottomFoamThreshold, i.uv.y + displ.y));
+                
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
