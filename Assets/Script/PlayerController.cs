@@ -9,17 +9,13 @@ public class PlayerController : MonoBehaviour
 
     const float PI = Mathf.PI;
 
-    [Range(0.0f,1.0f)]
-    public float force;
-
-    public float maxSpeed;
-
-    public float rotationalSpeed;
-
-    public GameObject boatMotor;
-
-    [Range(0, 1)]
-    public float rotationSmoothFactor;
+    [Tooltip("Given force to boat")]
+    [Range(0.0f, 1.0f)] [SerializeField] private float force;
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float rotationalSpeed;
+    [SerializeField] private GameObject boatMotor;
+    [Range(0, 1)] [SerializeField] private float motorRotationSmoothFactor;
+    [Range(0, 1)] [SerializeField] private float boatRotationMultiplier;
 
 
     public TMP_Text text;
@@ -65,26 +61,36 @@ public class PlayerController : MonoBehaviour
         controllerRotationQ = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTrackedRemote);
         //controllerRotationV = controllerRotationQ.eulerAngles;
 
+        //-------------------------------------------------------------------------
+        //For Debug Purpose
         text.text = controllerRotationQ.eulerAngles.z.ToString();
 
+        //------------------------------------------------------------------------------
+
         controllerRotationY = controllerRotationQ.eulerAngles.y;
+        motorRotationY = boatMotor.transform.rotation.eulerAngles.y;
         if (controllerRotationY >= 180 && controllerRotationY <= 360)
         {
             controllerRotationY = controllerRotationY - 360;
         }
 
-
-
-        motorRotationY = boatMotor.transform.rotation.eulerAngles.y;
         if (motorRotationY >= 180 && motorRotationY <= 360)
         {
             motorRotationY = motorRotationY - 360;
         }
 
-        boatMotorRotationQ = Quaternion.Euler(0, Mathf.SmoothDamp(motorRotationY, controllerRotationY, ref rotationalSpeed, rotationSmoothFactor), 0);
+        boatMotorRotationQ = Quaternion.Euler(0, Mathf.SmoothDamp(motorRotationY, controllerRotationY, ref rotationalSpeed, motorRotationSmoothFactor), 0);
         boatMotor.transform.rotation = boatMotorRotationQ;
 
 
+
+        float boatVelocity = rb.velocity.z;
+        rb.angularVelocity = new Vector3(0, boatVelocity * Mathf.Sin(Mathf.Deg2Rad * controllerRotationY) * -0.5f * boatRotationMultiplier, 0);
+
+
+
+        //RotateMotorWithController();
+        //RotateBoat();
 
         rotationY = transform.localEulerAngles.y;
         //OVRInput.FixedUpdate();
@@ -115,10 +121,41 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-
-
-
     }
+
+
+    //Rotate the motor with controller input
+    void RotateMotorWithController()
+    {
+        controllerRotationY = controllerRotationQ.eulerAngles.y;
+        motorRotationY = boatMotor.transform.rotation.eulerAngles.y;
+        if (controllerRotationY >= 180 && controllerRotationY <= 360)
+        {
+            controllerRotationY = controllerRotationY - 360;
+        }
+        
+        if (motorRotationY >= 180 && motorRotationY <= 360)
+        {
+            motorRotationY = motorRotationY - 360;
+        }
+
+        boatMotorRotationQ = Quaternion.Euler(0, Mathf.SmoothDamp(motorRotationY, controllerRotationY, ref rotationalSpeed, motorRotationSmoothFactor), 0);
+        boatMotor.transform.rotation = boatMotorRotationQ;
+    }
+
+
+    //Rotate the boat relative to its speed and input
+    void RotateBoat()
+    {
+        float boatVelocity = rb.velocity.magnitude;
+        rb.angularVelocity = new Vector3(0, boatVelocity * Mathf.Sin(Mathf.Deg2Rad * controllerRotationY) * boatRotationMultiplier, 0);
+    }
+
+
+
+
+
+
 
 
 
