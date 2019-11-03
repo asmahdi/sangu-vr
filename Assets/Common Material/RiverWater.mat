@@ -109,7 +109,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _SurfaceNoise:
         m_Texture: {fileID: 2800000, guid: 7451c10026b334bfc831ff8b0dba276f, type: 3}
-        m_Scale: {x: 20, y: 25}
+        m_Scale: {x: 100, y: 25}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_1576D548: 0.64
@@ -158,7 +158,7 @@ Material:
     - _SpecularHighlights: 0
     - _SrcBlend: 1
     - _Surface: 0
-    - _SurfaceDistortionAmount: 0.76
+    - _SurfaceDistortionAmount: 0.65
     - _SurfaceNoiseCutoff: 0.6
     - _Tessellation: 1
     - _TransparencyIntersectionThresholdMax: 0
@@ -166,8 +166,8 @@ Material:
     - _UVSec: 0
     - _VectorLength: 0.1
     - _WaveScale: 0.063
-    - _WaveSteepness: 0.157
-    - _Wavelength: 2
+    - _WaveSteepness: 0.05
+    - _Wavelength: 0.5
     - _Wavespeed: 1.97
     - _ZWrite: 1
     m_Colors:
@@ -187,7 +187,7 @@ Material:
     - _DistortParams: {r: 1, g: 1, b: 2, a: 1.15}
     - _Emission: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 0.83214664, g: 0.9433962, b: 0.92368114, a: 1}
+    - _FoamColor: {r: 0.69112676, g: 0.8773585, b: 0.76822376, a: 0.85882354}
     - _FoamIntersectionProperties: {r: 0, g: 0, b: 0, a: 0}
     - _FoamProperties: {r: 0, g: 0, b: 0, a: 0}
     - _GAmplitude: {r: 0.3, g: 0.35, b: 0.25, a: 0.25}
@@ -206,7 +206,7 @@ Material:
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _SpecularColor: {r: 0.72, g: 0.72, b: 0.72, a: 1}
     - _SurfaceNoiseScroll: {r: 0.03, g: 0.03, b: 0, a: 0}
-    - _WaterColor: {r: 0.5803222, g: 0.764151, b: 0.71819377, a: 0.9372549}
+    - _WaterColor: {r: 0.18503025, g: 0.509434, b: 0.37395442, a: 0.7058824}
     - _WorldLightDir: {r: 0, g: 0.1, b: -0.5, a: 0}
     - _horizonColor: {r: 0.172, g: 0.463, b: 0.435, a: 0}
 --- !u!114 &7028566906439195039
