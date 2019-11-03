@@ -10,7 +10,7 @@ public class TestControllerScriptMainul : MonoBehaviour
 
 	static int colorIndex, length;
 
-    public GameObject handle;
+    //public GameObject handle;
     public TMP_Text text;
 
     float timer;
@@ -62,8 +62,8 @@ public class TestControllerScriptMainul : MonoBehaviour
 
         qrot = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTrackedRemote);
 
-        text.text = qrot.ToEuler().ToString();
-        handle.transform.rotation = qrot;
+        text.text = qrot.eulerAngles.y.ToString();
+        //handle.transform.rotation = qrot;
 
         //if (OVRInput.Get(OVRInput.RawButton.RTouchpad))
         //{

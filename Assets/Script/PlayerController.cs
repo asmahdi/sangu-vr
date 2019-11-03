@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 
 [RequireComponent(typeof(FloatingObject))]
 public class PlayerController : MonoBehaviour
@@ -16,10 +16,26 @@ public class PlayerController : MonoBehaviour
 
     public float rotationalSpeed;
 
-    Rigidbody rb;
-    float rotationY;
-    bool isColliding;
+    public GameObject boatMotor;
 
+    [Range(0, 1)]
+    public float rotationSmoothFactor;
+
+
+    public TMP_Text text;
+    
+
+    Quaternion controllerRotationQ;
+    Quaternion boatMotorRotationQ;
+    Vector3 controllerRotationV;
+    Vector3 boatMotorRotationV;
+    float rotationY;
+    float motorRotationY;
+    float controllerRotationY;
+
+
+    bool isColliding;
+    Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
@@ -32,20 +48,54 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        move();
-        ovrControllMove();
+        //move();
+        OvrControllerIntrigation();
     }
 
 
 
 
-    void ovrControllMove()
+    void OvrControllerIntrigation()
     {
+        OVRInput.FixedUpdate();
+
+
+
+        //BoatEngineControll with Controller
+        controllerRotationQ = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTrackedRemote);
+        //controllerRotationV = controllerRotationQ.eulerAngles;
+
+        text.text = controllerRotationQ.eulerAngles.z.ToString();
+
+        controllerRotationY = controllerRotationQ.eulerAngles.y;
+        if (controllerRotationY >= 180 && controllerRotationY <= 360)
+        {
+            controllerRotationY = controllerRotationY - 360;
+        }
+
+
+
+        motorRotationY = boatMotor.transform.rotation.eulerAngles.y;
+        if (motorRotationY >= 180 && motorRotationY <= 360)
+        {
+            motorRotationY = motorRotationY - 360;
+        }
+
+        boatMotorRotationQ = Quaternion.Euler(0, Mathf.SmoothDamp(motorRotationY, controllerRotationY, ref rotationalSpeed, rotationSmoothFactor), 0);
+        boatMotor.transform.rotation = boatMotorRotationQ;
+
+
+
+        rotationY = transform.localEulerAngles.y;
         //OVRInput.FixedUpdate();
         if (rb.velocity.x < maxSpeed && rb.velocity.z < maxSpeed)
         {
             //do here
             if (OVRInput.Get(OVRInput.RawButton.RIndexTrigger))
+            {
+                rb.AddForce(10 * force * Mathf.Sin(rotationY * PI / 180), 0, 10 * force * Mathf.Cos(rotationY * PI / 180));
+            }
+            if (controllerRotationQ.eulerAngles.z >= 30 && controllerRotationQ.eulerAngles.z <= 100)
             {
                 rb.AddForce(10 * force * Mathf.Sin(rotationY * PI / 180), 0, 10 * force * Mathf.Cos(rotationY * PI / 180));
             }
@@ -58,7 +108,15 @@ public class PlayerController : MonoBehaviour
             {
                 rb.AddForce(-force * Mathf.Sin(rotationY * PI / 180), 0, force * -Mathf.Cos(rotationY * PI / 180));
             }
+
+            if (controllerRotationQ.eulerAngles.z >= 250 && controllerRotationQ.eulerAngles.z <= 300)
+            {
+                rb.AddForce(-force * Mathf.Sin(rotationY * PI / 180), 0, force * -Mathf.Cos(rotationY * PI / 180));
+            }
         }
+
+
+
 
     }
 
