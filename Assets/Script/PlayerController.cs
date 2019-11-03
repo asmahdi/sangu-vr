@@ -1,26 +1,41 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
+[RequireComponent(typeof(FloatingObject))]
 public class PlayerController : MonoBehaviour
 {
 
     const float PI = Mathf.PI;
 
-    [Range(0.1f,0.5f)]
-    public float speed;
+    [Range(0.0f,1.0f)]
+    public float force;
 
-    [Range(1.0f,4.0f)]
-    public float speedMultiplier;
+    public float maxSpeed;
 
-
-    [Range(1.0f, 2.0f)]
     public float rotationalSpeed;
 
-    Rigidbody rb;
-    float rotationY;
-    bool isColliding;
+    public GameObject boatMotor;
 
+    [Range(0, 1)]
+    public float rotationSmoothFactor;
+
+
+    public TMP_Text text;
+    
+
+    Quaternion controllerRotationQ;
+    Quaternion boatMotorRotationQ;
+    Vector3 controllerRotationV;
+    Vector3 boatMotorRotationV;
+    float rotationY;
+    float motorRotationY;
+    float controllerRotationY;
+
+
+    bool isColliding;
+    Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
@@ -33,87 +48,123 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        //moveAndRotate();
-        move();
-        //Debug.Log(Mathf.Sin(90*Mathf.PI/180));
-        //print(transform.localEulerAngles);
+        //move();
+        OvrControllerIntrigation();
+    }
+
+
+
+
+    void OvrControllerIntrigation()
+    {
+        OVRInput.FixedUpdate();
+
+
+
+        //BoatEngineControll with Controller
+        controllerRotationQ = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTrackedRemote);
+        //controllerRotationV = controllerRotationQ.eulerAngles;
+
+        text.text = controllerRotationQ.eulerAngles.z.ToString();
+
+        controllerRotationY = controllerRotationQ.eulerAngles.y;
+        if (controllerRotationY >= 180 && controllerRotationY <= 360)
+        {
+            controllerRotationY = controllerRotationY - 360;
+        }
+
+
+
+        motorRotationY = boatMotor.transform.rotation.eulerAngles.y;
+        if (motorRotationY >= 180 && motorRotationY <= 360)
+        {
+            motorRotationY = motorRotationY - 360;
+        }
+
+        boatMotorRotationQ = Quaternion.Euler(0, Mathf.SmoothDamp(motorRotationY, controllerRotationY, ref rotationalSpeed, rotationSmoothFactor), 0);
+        boatMotor.transform.rotation = boatMotorRotationQ;
+
+
+
+        rotationY = transform.localEulerAngles.y;
+        //OVRInput.FixedUpdate();
+        if (rb.velocity.x < maxSpeed && rb.velocity.z < maxSpeed)
+        {
+            //do here
+            if (OVRInput.Get(OVRInput.RawButton.RIndexTrigger))
+            {
+                rb.AddForce(10 * force * Mathf.Sin(rotationY * PI / 180), 0, 10 * force * Mathf.Cos(rotationY * PI / 180));
+            }
+            if (controllerRotationQ.eulerAngles.z >= 30 && controllerRotationQ.eulerAngles.z <= 100)
+            {
+                rb.AddForce(10 * force * Mathf.Sin(rotationY * PI / 180), 0, 10 * force * Mathf.Cos(rotationY * PI / 180));
+            }
+        }
+
+        //Decelaration
+        if (rb.velocity.x > -maxSpeed && rb.velocity.z > -maxSpeed)
+        {
+            if (OVRInput.Get(OVRInput.RawButton.RTouchpad))
+            {
+                rb.AddForce(-force * Mathf.Sin(rotationY * PI / 180), 0, force * -Mathf.Cos(rotationY * PI / 180));
+            }
+
+            if (controllerRotationQ.eulerAngles.z >= 250 && controllerRotationQ.eulerAngles.z <= 300)
+            {
+                rb.AddForce(-force * Mathf.Sin(rotationY * PI / 180), 0, force * -Mathf.Cos(rotationY * PI / 180));
+            }
+        }
+
+
+
 
     }
+
+
 
 
 
     void move()
     {
-
+        //Rotate
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.Rotate(0, -rotationalSpeed * Time.deltaTime, 0);
+            //transform.Rotate(0, -rotationalSpeed * Time.deltaTime, 0);
+
+            rb.angularVelocity = new Vector3(0, 1, 0);
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            transform.Rotate(0, rotationalSpeed * Time.deltaTime, 0);
+            //transform.Rotate(0, rotationalSpeed * Time.deltaTime, 0);
         }
 
+        
+
+        //Forward and backward movement
 
         rotationY = transform.localEulerAngles.y;
-
-
-        if (Input.GetKey(KeyCode.A))
+        //accelearation
+        if (rb.velocity.x < maxSpeed && rb.velocity.z < maxSpeed)
         {
-            Debug.Log("Down");
-            //rb.velocity = new Vector3(speed * Mathf.Sin(rotationY * PI / 180), 0, speed * Mathf.Cos(rotationY * PI / 180));
-            rb.AddForce(10 * speed * Mathf.Sin(rotationY * PI / 180), 0, 10 * speed * Mathf.Cos(rotationY * PI / 180));
-        } else
-        {
-            if (isColliding)
+            //do here
+            if (Input.GetKey(KeyCode.A))
             {
-
+                rb.AddForce(10 * force * Mathf.Sin(rotationY * PI / 180), 0, 10 * force * Mathf.Cos(rotationY * PI / 180));
             }
-            else
-            {
-                //rb.velocity = new Vector3(speed * Mathf.Sin(rotationY * PI / 180), 0, speed * Mathf.Cos(rotationY * PI / 180));
-                //rb.AddForce(speed * Mathf.Sin(rotationY * PI / 180), 0, speed * Mathf.Cos(rotationY * PI / 180))
-            }
-            
         }
-        print(isColliding);
+
+        //Decelaration
+        if (rb.velocity.x > -maxSpeed && rb.velocity.z > -maxSpeed)
+        {
+            if (Input.GetKey(KeyCode.Z))
+            {
+                rb.AddForce(-force * Mathf.Sin(rotationY * PI / 180), 0, force * -Mathf.Cos(rotationY * PI / 180));
+            }
+        }
+
+
+        print(rb.angularVelocity.y);
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        //Code Here
-        //isColliding = true;
-    }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        //code
-        isColliding = false;
-    }
-
-
-    //void moveAndRotate() 
-    //{
-    //    //movement
-    //    if (Input.GetKey(KeyCode.A))
-    //    {
-    //        Debug.Log("Down");
-    //        transform.Translate(0, 0, speed * speedMultiplier * Time.deltaTime);
-    //    }
-    //    else
-    //    {
-    //        transform.Translate(0, 0, speed * Time.deltaTime);
-    //    }
-
-
-    //    //Rotation
-    //    if (Input.GetKey(KeyCode.LeftArrow))
-    //    {
-    //        transform.Rotate(0, -rotationalSpeed * Time.deltaTime, 0);
-    //    }
-    //    else if (Input.GetKey(KeyCode.RightArrow))
-    //    {
-    //        transform.Rotate(0, rotationalSpeed * Time.deltaTime, 0);
-    //    }
-    //}
 }
