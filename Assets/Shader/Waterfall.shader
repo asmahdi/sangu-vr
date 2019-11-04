@@ -3,6 +3,8 @@
     Properties
     {
         _Speed("Flow Speed",float) = 1
+        _TransparentColor("Transparent Color", Color) = (1,1,1,1)
+        _Threshold ("Threshhold", Float) = 0.1
         _NoiseTex ("Noise Texture", 2D) = "white" {}
         _DisplGuide("Displacement Guide", 2D) = "white" {}
         _DisplAmount("Displacement Amount", float) = 0
@@ -11,12 +13,15 @@
         [HDR]_ColorBottomLight("Color Bottom Light", color) = (1,1,1,1)
         [HDR]_ColorTopLight("Color Top Light", color) = (1,1,1,1)
         _BottomFoamThreshold("Bottom Foam Threshold", Range(0,1)) = 0.1
+        
     }
     SubShader
     {
         Tags { "Queue"="Transparent" }
         LOD 100
         Cull Off
+        ZWrite Off
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Stencil {
               Ref 2
@@ -59,6 +64,8 @@
             half _DisplAmount;
             half _BottomFoamThreshold;
             float _Speed;
+            fixed4 _TransparentColor;
+            half _Threshold;
              
             v2f vert (appdata v)
             {
@@ -80,9 +87,18 @@
                 //Noise
                 half noise = tex2D(_NoiseTex, float2(i.noiseUV.x, i.noiseUV.y + _Time.y*_Speed / 5) + displ).x;
                 noise = round(noise * 5.0) / 5.0;
+
+                fixed4 col = noise;
+                half3 transparent_diff = col.xyz - _TransparentColor.xyz;
+                half transparent_diff_squared = dot(transparent_diff,transparent_diff);
+                if(transparent_diff_squared < _Threshold)
+                discard;
+                
                  
-                fixed4 col = lerp(lerp(_ColorBottomDark, _ColorTopDark, i.uv.y), lerp(_ColorBottomLight, _ColorTopLight, i.uv.y), noise);
+                col = lerp(lerp(_ColorBottomDark, _ColorTopDark, i.uv.y), lerp(_ColorBottomLight, _ColorTopLight, i.uv.y), noise);
                 col = lerp(fixed4(1,1,1,1), col, step(_BottomFoamThreshold, i.uv.y + displ.y));
+                
+                
                 
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

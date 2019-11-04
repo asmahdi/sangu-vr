@@ -26,11 +26,11 @@ public class FloatingObject : MonoBehaviour {
 	private float waterLevel;
 	private Vector3 upliftForce ;
 	private Vector3 angularForce;
+    
 
+   
 
-
-
-	void OnTriggerStay(Collider col)
+    void OnTriggerStay(Collider col)
 	{
         if (col.tag != waterBodyTag)
 		{

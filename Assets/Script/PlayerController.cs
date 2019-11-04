@@ -45,10 +45,11 @@ public class PlayerController : MonoBehaviour
         
     }
 
+
     // Update is called once per frame
     void FixedUpdate()
     {
-        //move();
+        move();
         OvrControllerIntrigation();
     }
 
@@ -57,6 +58,10 @@ public class PlayerController : MonoBehaviour
 
     void OvrControllerIntrigation()
     {
+        if (OVRInput.IsControllerConnected(OVRInput.Controller.RTrackedRemote) != true)
+        {
+            return;
+        }
         OVRInput.FixedUpdate();
 
 
@@ -65,7 +70,7 @@ public class PlayerController : MonoBehaviour
         controllerRotationQ = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTrackedRemote);
         //controllerRotationV = controllerRotationQ.eulerAngles;
 
-        text.text = controllerRotationQ.eulerAngles.z.ToString();
+        //text.text = controllerRotationQ.eulerAngles.z.ToString();
 
         controllerRotationY = controllerRotationQ.eulerAngles.y;
         if (controllerRotationY >= 180 && controllerRotationY <= 360)
@@ -73,7 +78,17 @@ public class PlayerController : MonoBehaviour
             controllerRotationY = controllerRotationY - 360;
         }
 
-
+        //--------------------------
+        // Temporary rotaion
+        if (motorRotationY > 10)
+        {
+            transform.Rotate(0, -rotationalSpeed * Time.deltaTime, 0);
+        }
+        if (motorRotationY < 10)
+        {
+            transform.Rotate(0, rotationalSpeed * Time.deltaTime, 0);
+        }
+        //--------------------------
 
         motorRotationY = boatMotor.transform.rotation.eulerAngles.y;
         if (motorRotationY >= 180 && motorRotationY <= 360)
@@ -84,6 +99,7 @@ public class PlayerController : MonoBehaviour
         boatMotorRotationQ = Quaternion.Euler(0, Mathf.SmoothDamp(motorRotationY, controllerRotationY, ref rotationalSpeed, rotationSmoothFactor), 0);
         boatMotor.transform.rotation = boatMotorRotationQ;
 
+        
 
 
         rotationY = transform.localEulerAngles.y;
@@ -129,13 +145,13 @@ public class PlayerController : MonoBehaviour
         //Rotate
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            //transform.Rotate(0, -rotationalSpeed * Time.deltaTime, 0);
+            transform.Rotate(0, -rotationalSpeed * Time.deltaTime, 0);
 
-            rb.angularVelocity = new Vector3(0, 1, 0);
+            //rb.angularVelocity = new Vector3(0, 1, 0);
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            //transform.Rotate(0, rotationalSpeed * Time.deltaTime, 0);
+            transform.Rotate(0, rotationalSpeed * Time.deltaTime, 0);
         }
 
         
