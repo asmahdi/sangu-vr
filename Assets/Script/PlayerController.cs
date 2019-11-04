@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     [Range(1.0f, 1.1f)] [SerializeField] private float activeForcedDrag;
 
 
-    public TMP_Text text;
+    //public TMP_Text text;
 
 
     Quaternion controllerRotationQ;
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
 
         
 
-        text.text = "F " + framerate + "\nmin " + minFrameRate;
+        //text.text = "F " + framerate + "\nmin " + minFrameRate;
     }
 
 
@@ -163,7 +163,11 @@ public class PlayerController : MonoBehaviour
 
 
 
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        //text.text = "Collided";
+        Destroy(gameObject);
+    }
 
 
 }
