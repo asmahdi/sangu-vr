@@ -9,9 +9,9 @@
     {
         Tags
         {
-          "Queue"="Transparent" "RenderType"="Transparent"
+          "Queue"="Transparent" 
         }
-        LOD 100
+        LOD 200
         ZWrite Off
         Blend SrcAlpha OneMinusSrcAlpha
 
