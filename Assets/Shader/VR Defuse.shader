@@ -4,7 +4,7 @@
     {
         _Color ("Color", Color) = (1,1,1,1)
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
-        _TextureAmount ("Texture Opacity", Range(0,1)) = 1
+        _TextureAmount ("Texture Opacity", Range(0,1)) = 0.5
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
     }
@@ -30,6 +30,7 @@
         half _Glossiness;
         half _Metallic;
         fixed4 _Color;
+        fixed4 _TextureColor;
         float _TextureAmount;
 
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
@@ -43,13 +44,13 @@
         {
             // Albedo comes from a texture tinted by color
            
-            fixed4 c = tex2D (_MainTex, IN.uv_MainTex) *_Color *_TextureAmount;
+            fixed4 c = lerp(_Color,tex2D (_MainTex, IN.uv_MainTex),_TextureAmount);
            
             o.Albedo = c.rgb ;
             // Metallic and smoothness come from slider variables
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
-            o.Albedo = o.Albedo * _Color;
+            o.Albedo = o.Albedo;
             o.Alpha = c.a;
         }
         ENDCG

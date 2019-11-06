@@ -3,6 +3,8 @@
     Properties
     {
         _WaterColor("Water Color", Color) = (1,1,1,1)
+        _Reflection("Reflection Amount",Range(0,1)) = 1 
+        _ReflectionDisplacement("ReflectionDisplacement",Range(0,1)) = 1
 
         _FoamColor("Foam Color", Color) = (1,1,1,1)
 
@@ -26,6 +28,8 @@
         _WaveSteepness ("Wave Steepness", Range(0, 1)) = 0.5
         _Wavelength("Wave Length", Float) = 0.1 
         _Direction ("Wave Direction (2D)", Vector) = (1,0,0,0)
+
+        [HideInInspector] _ReflectionTex ("", 2D) = "white" {}
        
     }
     SubShader
@@ -57,17 +61,18 @@
             {
                 float4 vertex : POSITION;
                 float4 uv : TEXCOORD0;
+                float4 refl : TEXCOORD1;
                 float3 normal : NORMAL;
             };
 
             struct v2f
             {
                 float4 vertex : SV_POSITION;
-                
                 float2 noiseUV : TEXCOORD0;
                 float2 distortUV : TEXCOORD1;
+                float4 refl : TEXCOORD2;
                 float3 viewNormal : NORMAL;
-                UNITY_FOG_COORDS(2)
+                UNITY_FOG_COORDS(3)
                 
             };
 
@@ -79,6 +84,8 @@
 
             float _WaveSteepness, _Wavelength;
             float2 _Direction;
+            float _Reflection;
+            float _ReflectionDisplacement;
 
 
             float4 alphaBlend(float4 top, float4 bottom)
@@ -109,6 +116,7 @@
                 o.distortUV = TRANSFORM_TEX(v.uv, _SurfaceDistortion);
                 o.noiseUV = TRANSFORM_TEX(v.uv, _SurfaceNoise);
                 o.viewNormal = COMPUTE_VIEW_NORMAL;
+                o.refl = ComputeScreenPos (o.vertex);
 
                 UNITY_TRANSFER_FOG(o,o.vertex);
 
@@ -122,18 +130,24 @@
             float2 _SurfaceNoiseScroll;
             float4 _WaterColor;
             float4 _FoamColor;
-
+            sampler2D _ReflectionTex;
 
             float4 frag (v2f i) : SV_Target
             {
-               
-               
-
-
+                //Surface noise cutoff amount
                 float surfaceNoiseCutoff = 1.2 * _SurfaceNoiseCutoff;
 
+                //Surface foam distortion
                 float2 distortSample = (tex2D(_SurfaceDistortion, i.distortUV).xy * 2 - 1) * _SurfaceDistortionAmount;
+                
+                //Reflection displacement 
+                float2 changingUV = i.distortUV + _Time.x * 2;
+                float4 displ = tex2D(_SurfaceDistortion, changingUV).xyzw;
+                displ = ((displ * 2) - 1) * _ReflectionDisplacement;
 
+                //Reflection projection
+                float4 refl = tex2Dproj(_ReflectionTex, UNITY_PROJ_COORD(i.refl+displ));
+                
                 // Distort the noise UV based off the RG channels (using xy here) of the distortion texture.
                 // Also offset it by time, scaled by the scroll speed.
                 float2 noiseUV = float2((i.noiseUV.x + _Time.y * _SurfaceNoiseScroll.x) + distortSample.x, 
@@ -151,7 +165,7 @@
                 UNITY_APPLY_FOG(i.fogCoord, _WaterColor);
 
                 // Use normal alpha blending to combine the foam with the surface.
-                return alphaBlend(surfaceNoiseColor, _WaterColor);
+                return lerp(alphaBlend(surfaceNoiseColor, _WaterColor),refl,_Reflection);
             }
            
             ENDCG
