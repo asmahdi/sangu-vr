@@ -11,9 +11,10 @@ Shader "OlikShader/SkyBox"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "QUEUE"="Background" "RenderType"="Background" "PreviewType"="Skybox" }
         LOD 200
         Cull Off
+        ZWrite Off
 
         Pass
         {

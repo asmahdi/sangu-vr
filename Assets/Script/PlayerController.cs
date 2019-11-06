@@ -9,29 +9,30 @@ public class PlayerController : MonoBehaviour
 
     const float PI = Mathf.PI;
 
-    [Range(0.0f,1.0f)]
-    public float force;
-
-    public float maxSpeed;
-
-    public float rotationalSpeed;
-
-    public GameObject boatMotor;
-
-    [Range(0, 1)]
-    public float rotationSmoothFactor;
+    [Tooltip("Given force to boat")]
+    [Range(0.0f, 1.0f)] [SerializeField] private float force;
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float rotationalSpeed;
+    [SerializeField] private GameObject boatMotor;
+    [Range(0, 1)] [SerializeField] private float motorRotationSmoothFactor;
+    [Range(0, 1)] [SerializeField] private float boatRotationMultiplier;
+    [Range(1.0f, 1.1f)] [SerializeField] private float activeForcedDrag;
 
 
-    public TMP_Text text;
-    
+    //public TMP_Text text;
+
 
     Quaternion controllerRotationQ;
-    Quaternion boatMotorRotationQ;
+    Quaternion targetBoatMotorRotation;
+    Quaternion currentBoatMotorRotation;
     Vector3 controllerRotationV;
-    Vector3 boatMotorRotationV;
+    Vector3 currentBoatMotorRotationV;
+    Vector3 targetBoatMotorRotationV;
+    Vector3 forceVector;
     float rotationY;
     float motorRotationY;
     float controllerRotationY;
+    float motorRotationOffset;
 
 
     bool isColliding;
@@ -42,144 +43,132 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         isColliding = false;
-        
-    }
 
+    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        move();
+        //move();
         OvrControllerIntrigation();
     }
 
 
+    int minFrameRate = 60;
+    int frameCounter = 0;
+    float timeCounter = 0;
+    int framerate = 0;
+
+    private void Update()
+    {
+        frameCounter++;
+        timeCounter += Time.deltaTime;
+
+        if (timeCounter >= 1)
+        {
+            framerate = frameCounter;
+            frameCounter = 0;
+            timeCounter = 0;
+        }
+
+        float fr = (1 / Time.deltaTime);
+
+        if (fr < minFrameRate)
+        {
+            minFrameRate = (int)fr;
+        }
+
+
+
+        //text.text = "F " + framerate + "\nmin " + minFrameRate;
+    }
 
 
     void OvrControllerIntrigation()
     {
-        if (OVRInput.IsControllerConnected(OVRInput.Controller.RTrackedRemote) != true)
-        {
-            return;
-        }
         OVRInput.FixedUpdate();
+        controllerRotationQ = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTrackedRemote);
 
 
 
         //BoatEngineControll with Controller
-        controllerRotationQ = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTrackedRemote);
         //controllerRotationV = controllerRotationQ.eulerAngles;
 
-        //text.text = controllerRotationQ.eulerAngles.z.ToString();
+        //-------------------------------------------------------------------------
+        //For Debug Purpose
+        //text.text = controllerRotationQ.eulerAngles.ToString();
+        if (OVRInput.GetDown(OVRInput.RawButton.Back))
+        {
+            minFrameRate = 60;
+        }
+        //------------------------------------------------------------------------------
 
         controllerRotationY = controllerRotationQ.eulerAngles.y;
+        motorRotationY = boatMotor.transform.rotation.eulerAngles.y;
         if (controllerRotationY >= 180 && controllerRotationY <= 360)
         {
             controllerRotationY = controllerRotationY - 360;
         }
 
-        //--------------------------
-        // Temporary rotaion
-        if (motorRotationY > 10)
-        {
-            transform.Rotate(0, -rotationalSpeed * Time.deltaTime, 0);
-        }
-        if (motorRotationY < 10)
-        {
-            transform.Rotate(0, rotationalSpeed * Time.deltaTime, 0);
-        }
-        //--------------------------
-
-        motorRotationY = boatMotor.transform.rotation.eulerAngles.y;
         if (motorRotationY >= 180 && motorRotationY <= 360)
         {
             motorRotationY = motorRotationY - 360;
         }
 
-        boatMotorRotationQ = Quaternion.Euler(0, Mathf.SmoothDamp(motorRotationY, controllerRotationY, ref rotationalSpeed, rotationSmoothFactor), 0);
-        boatMotor.transform.rotation = boatMotorRotationQ;
+        motorRotationOffset = transform.rotation.eulerAngles.y;
+        targetBoatMotorRotationV = new Vector3(0, controllerRotationY + motorRotationOffset, 0);
+        targetBoatMotorRotation = Quaternion.Euler(targetBoatMotorRotationV);
+
+        currentBoatMotorRotation = boatMotor.transform.rotation;
 
         
 
 
+        //Rotate the Boat
+        //Main Boat Controll
+        targetBoatMotorRotation = Quaternion.Slerp(currentBoatMotorRotation, targetBoatMotorRotation, motorRotationSmoothFactor);
+        boatMotor.transform.rotation = targetBoatMotorRotation;
+
+
+
+        float boatVelocity = rb.velocity.magnitude;
+        rb.angularVelocity = new Vector3(0, boatVelocity * Mathf.Sin(Mathf.Deg2Rad * controllerRotationY) * -0.5f * boatRotationMultiplier, 0);
+
+
         rotationY = transform.localEulerAngles.y;
         //OVRInput.FixedUpdate();
-        if (rb.velocity.x < maxSpeed && rb.velocity.z < maxSpeed)
+        if (rb.velocity.magnitude < maxSpeed)
         {
             //do here
-            if (OVRInput.Get(OVRInput.RawButton.RIndexTrigger))
+            if (OVRInput.Get(OVRInput.RawButton.RIndexTrigger) || Input.GetKey(KeyCode.A))
             {
                 rb.AddForce(10 * force * Mathf.Sin(rotationY * PI / 180), 0, 10 * force * Mathf.Cos(rotationY * PI / 180));
             }
-            if (controllerRotationQ.eulerAngles.z >= 30 && controllerRotationQ.eulerAngles.z <= 100)
+            else
             {
-                rb.AddForce(10 * force * Mathf.Sin(rotationY * PI / 180), 0, 10 * force * Mathf.Cos(rotationY * PI / 180));
+                float dragForceMagnitude = rb.velocity.magnitude * rb.drag * activeForcedDrag;
+                Vector3 dragVector = new Vector3(dragForceMagnitude * rb.velocity.normalized.x, 0, dragForceMagnitude * rb.velocity.normalized.z);
+                rb.AddForce(dragVector);
             }
         }
 
         //Decelaration
-        if (rb.velocity.x > -maxSpeed && rb.velocity.z > -maxSpeed)
+        if (rb.velocity.magnitude < maxSpeed)
         {
-            if (OVRInput.Get(OVRInput.RawButton.RTouchpad))
-            {
-                rb.AddForce(-force * Mathf.Sin(rotationY * PI / 180), 0, force * -Mathf.Cos(rotationY * PI / 180));
-            }
-
-            if (controllerRotationQ.eulerAngles.z >= 250 && controllerRotationQ.eulerAngles.z <= 300)
-            {
-                rb.AddForce(-force * Mathf.Sin(rotationY * PI / 180), 0, force * -Mathf.Cos(rotationY * PI / 180));
-            }
+            //if (OVRInput.Get(OVRInput.RawButton.RTouchpad) || Input.GetKey(KeyCode.Z))
+            //{
+            //    rb.AddForce(-force * Mathf.Sin(rotationY * PI / 180), 0, force * -Mathf.Cos(rotationY * PI / 180));
+            //}
         }
-
-
-
 
     }
 
 
 
-
-
-    void move()
+    private void OnCollisionEnter(Collision collision)
     {
-        //Rotate
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.Rotate(0, -rotationalSpeed * Time.deltaTime, 0);
-
-            //rb.angularVelocity = new Vector3(0, 1, 0);
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.Rotate(0, rotationalSpeed * Time.deltaTime, 0);
-        }
-
-        
-
-        //Forward and backward movement
-
-        rotationY = transform.localEulerAngles.y;
-        //accelearation
-        if (rb.velocity.x < maxSpeed && rb.velocity.z < maxSpeed)
-        {
-            //do here
-            if (Input.GetKey(KeyCode.A))
-            {
-                rb.AddForce(10 * force * Mathf.Sin(rotationY * PI / 180), 0, 10 * force * Mathf.Cos(rotationY * PI / 180));
-            }
-        }
-
-        //Decelaration
-        if (rb.velocity.x > -maxSpeed && rb.velocity.z > -maxSpeed)
-        {
-            if (Input.GetKey(KeyCode.Z))
-            {
-                rb.AddForce(-force * Mathf.Sin(rotationY * PI / 180), 0, force * -Mathf.Cos(rotationY * PI / 180));
-            }
-        }
-
-
-        print(rb.angularVelocity.y);
+        //text.text = "Collided";
+       // Destroy(gameObject);
     }
 
 
