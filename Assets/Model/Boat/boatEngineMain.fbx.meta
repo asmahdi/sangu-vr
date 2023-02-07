@@ -3,7 +3,42 @@ guid: 6d629a401b9484ed4ad9f417db0c7b9f
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Accelarator01
+    second: {fileID: 2100000, guid: 4727467c704bc4297a67b55aeea81813, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Accelarator02
+    second: {fileID: 2100000, guid: 80d3d44ac9ca6476eb646aa06bcc1d72, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Engine01
+    second: {fileID: 2100000, guid: d717f30d2361a4493b252ef6241fee48, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Engine02
+    second: {fileID: 2100000, guid: 02c05d9fd93dc4c1e84c718efe856535, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Engine03
+    second: {fileID: 2100000, guid: 50d3fdfdba2b045d9b0628428ee81cc5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RotorAxcel01
+    second: {fileID: 2100000, guid: dad2b560b7a3848a49756b7b17de8a74, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RotorAxcel02
+    second: {fileID: 2100000, guid: f38964671aefd427590e8891c2d64733, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

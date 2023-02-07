@@ -218,9 +218,9 @@ QualitySettings:
     excludedTargetPlatforms: []
   - serializedVersion: 2
     name: Oculus Go
-    pixelLightCount: 4
+    pixelLightCount: 0
     shadows: 0
-    shadowResolution: 2
+    shadowResolution: 1
     shadowProjection: 1
     shadowCascades: 1
     shadowDistance: 150
@@ -230,11 +230,11 @@ QualitySettings:
     shadowmaskMode: 1
     skinWeights: 1
     textureQuality: 0
-    anisotropicTextures: 1
-    antiAliasing: 4
+    anisotropicTextures: 0
+    antiAliasing: 2
     softParticles: 0
     softVegetation: 1
-    realtimeReflectionProbes: 0
+    realtimeReflectionProbes: 1
     billboardsFaceCameraPosition: 1
     vSyncCount: 0
     lodBias: 2

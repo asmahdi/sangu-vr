@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEngine.SceneManagement;
 using UnityEngine;
 using TMPro;
 
@@ -12,7 +11,6 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Given force to boat")]
     [Range(0.0f, 1.0f)] [SerializeField] private float force;
     [SerializeField] private float maxSpeed;
-    [SerializeField] private float rotationalSpeed;
     [SerializeField] private GameObject boatMotor;
     [Range(0, 1)] [SerializeField] private float motorRotationSmoothFactor;
     [Range(0, 1)] [SerializeField] private float boatRotationMultiplier;
@@ -23,9 +21,15 @@ public class PlayerController : MonoBehaviour
 
     [Tooltip("Add Collectable Stones Tag Here")]
     [SerializeField] string collectableStoneTag;
+    [Tooltip("Add respawn Tag Here")]
+    [SerializeField] string respawnTag;
 
     [Tooltip("Collected Stone will be store in these position")]
     [SerializeField] GameObject[] collectedStonesSotrage;
+
+    [SerializeField] private AudioSource boatEngineAudio;
+    [SerializeField] private float maxPitch,minPitch;
+    [SerializeField] private GameObject endCanvas;
 
 
     public TMP_Text text;
@@ -48,6 +52,9 @@ public class PlayerController : MonoBehaviour
     int closestPointIndex;
     int emptyStoneIndex;
     int touchCount;
+    float pitchInterPolation;
+
+    private bool activeControll;
 
 
 
@@ -59,12 +66,22 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         emptyStoneIndex = 0;
         isBoatEngineActive = true;
+        activeControll = true;
+        endCanvas.SetActive(false);
 
     }
 
     private void FixedUpdate()
     {
-        OvrControllerIntrigation();
+        
+            OvrControllerIntrigation();
+        
+       if ( OVRInput.Get(OVRInput.RawButton.Back) || Input.GetKeyUp(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("Game");
+        }
+        
+        Application.targetFrameRate = 72;
     }
 
 
@@ -99,7 +116,7 @@ public class PlayerController : MonoBehaviour
             initialTouch = OVRInput.Get(OVRInput.RawAxis2D.RTouchpad);
         }
 
-        text.text = isBoatEngineActive.ToString();
+        //text.text = isBoatEngineActive.ToString();
 
 
 
@@ -138,16 +155,22 @@ public class PlayerController : MonoBehaviour
         rotationY = transform.localEulerAngles.y;
         if (rb.velocity.magnitude < maxSpeed)
         {
-            if (OVRInput.Get(OVRInput.RawButton.RIndexTrigger) || Input.GetKey(KeyCode.A))
-            {
-                rb.AddForce(10 * force * Mathf.Sin(rotationY * PI / 180), 0, 10 * force * Mathf.Cos(rotationY * PI / 180));
-            }
-            else
-            {
-                float dragForceMagnitude = rb.velocity.magnitude * rb.drag * activeForcedDrag;
-                Vector3 dragVector = new Vector3(dragForceMagnitude * rb.velocity.normalized.x, 0, dragForceMagnitude * rb.velocity.normalized.z);
-                rb.AddForce(dragVector);
-            }
+            
+                if (OVRInput.Get(OVRInput.RawButton.RIndexTrigger) || Input.GetKey(KeyCode.A) && activeControll)
+                {
+                
+                    rb.AddForce(10 * force * Mathf.Sin(rotationY * PI / 180), 0, 10 * force * Mathf.Cos(rotationY * PI / 180));
+                    EngineStart();
+                    
+                }
+                else
+                {
+                    EngineStandby();
+                    float dragForceMagnitude = rb.velocity.magnitude * rb.drag * activeForcedDrag;
+                    Vector3 dragVector = new Vector3(dragForceMagnitude * rb.velocity.normalized.x, 0, dragForceMagnitude * rb.velocity.normalized.z);
+                    rb.AddForce(dragVector);
+                }
+            
         }
 
         //Decelaration is currently disabled for better experience. 
@@ -190,14 +213,16 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Find the Closest SpawnLocation
-        ClosestPoint(gameObject.transform.position);
+        if (collision.gameObject.tag == respawnTag)
+        {
+            //Find the Closest SpawnLocation
+            ClosestPoint(gameObject.transform.position);
 
-        //Move gameobject or new place
-        rb.velocity = Vector3.zero;
-        gameObject.transform.position = spawnPoints[closestPointIndex].transform.position;
-        gameObject.transform.rotation = spawnPoints[closestPointIndex].transform.rotation;
-
+            //Move gameobject or new place
+            rb.velocity = Vector3.zero;
+            gameObject.transform.position = spawnPoints[closestPointIndex].transform.position;
+            gameObject.transform.rotation = spawnPoints[closestPointIndex].transform.rotation;
+        }
     }
 
 
@@ -213,6 +238,33 @@ public class PlayerController : MonoBehaviour
 
             emptyStoneIndex++;
         }
+
+        if (other.gameObject.tag == "End")
+        {
+            activeControll = false;
+            endCanvas.SetActive(true);
+        }
+    }
+
+    private void EngineStart()
+    {
+
+        if (pitchInterPolation < 1 )
+        {
+            pitchInterPolation += 0.01f;
+        }
+        
+        boatEngineAudio.pitch = Mathf.Lerp(boatEngineAudio.pitch,maxPitch, pitchInterPolation);
+    }
+    private void EngineStandby()
+    {
+
+        if (pitchInterPolation > 0)
+        {
+            pitchInterPolation -= 0.01f;
+        }
+
+        boatEngineAudio.pitch = Mathf.Lerp(boatEngineAudio.pitch, minPitch, pitchInterPolation);
     }
 
 }

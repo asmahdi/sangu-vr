@@ -147,7 +147,7 @@ Material:
     - _RefNumber: 1
     - _ReflDistort: 0.44
     - _Reflection: 0.2
-    - _ReflectionDisplacement: 0.1
+    - _ReflectionDisplacement: 0.3
     - _RefrDistort: 0.4
     - _SampleGI: 0
     - _Shininess: 0
@@ -168,7 +168,7 @@ Material:
     - _UVSec: 0
     - _VectorLength: 0.1
     - _WaveScale: 0.063
-    - _WaveSteepness: 0.05
+    - _WaveSteepness: 0.02
     - _Wavelength: 1
     - _Wavespeed: 1.97
     - _ZWrite: 1
@@ -189,7 +189,7 @@ Material:
     - _DistortParams: {r: 1, g: 1, b: 2, a: 1.15}
     - _Emission: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 0.8242257, g: 0.9245283, b: 0.8660185, a: 0.85882354}
+    - _FoamColor: {r: 0.2943663, g: 0.5943396, b: 0.42049143, a: 0.85882354}
     - _FoamIntersectionProperties: {r: 0, g: 0, b: 0, a: 0}
     - _FoamProperties: {r: 0, g: 0, b: 0, a: 0}
     - _GAmplitude: {r: 0.3, g: 0.35, b: 0.25, a: 0.25}
@@ -208,7 +208,7 @@ Material:
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
     - _SpecularColor: {r: 0.72, g: 0.72, b: 0.72, a: 1}
     - _SurfaceNoiseScroll: {r: 0.03, g: 0.03, b: 0, a: 0}
-    - _WaterColor: {r: 0.31238875, g: 0.49056602, b: 0.42226475, a: 0.7058824}
+    - _WaterColor: {r: 0.13585797, g: 0.4056604, b: 0.33506355, a: 0.7058824}
     - _WorldLightDir: {r: 0, g: 0.1, b: -0.5, a: 0}
     - _horizonColor: {r: 0.172, g: 0.463, b: 0.435, a: 0}
 --- !u!114 &7028566906439195039

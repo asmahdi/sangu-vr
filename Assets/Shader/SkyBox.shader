@@ -55,7 +55,9 @@ Shader "OlikShader/SkyBox"
 
             }
             fixed4 frag (v2f i) : COLOR {
+            fixed4 tex = tex2D(_MainTex,i.texcoord);
              fixed4 col = lerp(_HorizonColor, _SkyColor,(i.texcoord.y + _HorizonOffset) );
+             col = col*tex;
              col.a = 1;
              return col;
             }

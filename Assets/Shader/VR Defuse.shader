@@ -10,8 +10,8 @@
     }
     SubShader
     {
-        Tags {  "Queue"="Transparent" "RenderType"="Transparent" }
-        LOD 200
+        Tags {  "RenderType"="Opaque" }
+        LOD 100
 
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
